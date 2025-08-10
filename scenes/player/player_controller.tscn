@@ -1,0 +1,98 @@
+[gd_scene load_steps=13 format=3 uid="uid://xx5khakdrq0m"]
+
+[ext_resource type="Script" path="res://assets/scripts/player/player_controller.gd" id="1_0cfoe"]
+[ext_resource type="Script" path="res://assets/scripts/player/mouse_capture.gd" id="1_4q5nu"]
+[ext_resource type="Script" path="res://assets/scripts/player/camera_controller.gd" id="1_iivv4"]
+[ext_resource type="Texture2D" uid="uid://b0clkw0apagjc" path="res://addons/kenney_prototype_textures/red/texture_10.png" id="2_0nonk"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_d7cw2"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5tt2p"]
+albedo_texture = ExtResource("2_0nonk")
+uv1_triplanar = true
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5p0uc"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_0nonk"]
+
+[sub_resource type="Animation" id="Animation_0nonk"]
+resource_name = "crouch"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CamComponent:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0.5, 0), Vector3(0, 0.25, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_5tt2p"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CamComponent:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0.5, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5afdu"]
+_data = {
+"RESET": SubResource("Animation_5tt2p"),
+"crouch": SubResource("Animation_0nonk")
+}
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_5tt2p"]
+
+[node name="playerController" type="CharacterBody3D" node_paths=PackedStringArray("standing_collision", "crouching_collision", "animation_player", "crouch_check")]
+script = ExtResource("1_0cfoe")
+debug = true
+standing_collision = NodePath("standing_collision")
+crouching_collision = NodePath("crouching_collision")
+animation_player = NodePath("AnimationPlayer")
+crouch_check = NodePath("ShapeCast3D")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_d7cw2")
+surface_material_override/0 = SubResource("StandardMaterial3D_5tt2p")
+
+[node name="standing_collision" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_5p0uc")
+
+[node name="crouching_collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("SphereShape3D_0nonk")
+disabled = true
+
+[node name="CamComponent" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="Camera3D" type="Camera3D" parent="CamComponent" node_paths=PackedStringArray("player_controller", "component_mouse_capture")]
+script = ExtResource("1_iivv4")
+player_controller = NodePath("../..")
+component_mouse_capture = NodePath("../../Components/mousecapture")
+
+[node name="Components" type="Node" parent="."]
+
+[node name="mousecapture" type="Node" parent="Components"]
+script = ExtResource("1_4q5nu")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_5afdu")
+}
+
+[node name="ShapeCast3D" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("SphereShape3D_5tt2p")
+target_position = Vector3(0, 0.5, 0)
+debug_shape_custom_color = Color(1, 0.8, 0, 1)
