@@ -14,6 +14,10 @@ config/name="Operation BLuestar"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Global="*res://assets/scripts/global.gd"
+
 [input]
 
 move_left={

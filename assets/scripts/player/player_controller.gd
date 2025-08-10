@@ -1,4 +1,4 @@
-class_name PlayerController extends CharacterBody3D
+class_name Player extends CharacterBody3D
 
 @export var debug : bool = false
 @export_category("References")
@@ -13,6 +13,8 @@ class_name PlayerController extends CharacterBody3D
 @export var acceleration : float = 0.2
 @export var deceleration : float = 0.5
 @export_group("Speed")
+@export var accelaration: float = 0.1
+@export var decelaration: float = 0.25
 @export var default_speed : float = 5.0
 @export var sprint_speed : float = 3.0
 @export var crouch_speed : float = -3.0
@@ -29,11 +31,16 @@ var crouch_modifier : float = 0.0
 var speed : float = 0.0
 
 func _ready() -> void:
+	Global.player = self
 	crouch_check.add_exception(self)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("dev_exit"):
 		get_tree().quit()
+	if event.is_action_pressed("sprint"):
+		sprint()
+	elif event.is_action_released("sprint"):
+		walk()
 	if event.is_action_pressed("crouch") and is_on_floor() and toggle_crouch:
 		if _is_crouching and crouch_check.is_colliding() == false:
 			stand()
