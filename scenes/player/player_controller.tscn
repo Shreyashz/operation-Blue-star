@@ -1,14 +1,16 @@
-[gd_scene load_steps=20 format=3 uid="uid://xx5khakdrq0m"]
+[gd_scene load_steps=33 format=3 uid="uid://xx5khakdrq0m"]
 
 [ext_resource type="Script" path="res://assets/scripts/player/player_controller.gd" id="1_0cfoe"]
 [ext_resource type="Script" path="res://assets/scripts/player/mouse_capture.gd" id="1_4q5nu"]
 [ext_resource type="Script" path="res://assets/scripts/player/camera_controller.gd" id="1_iivv4"]
 [ext_resource type="Texture2D" uid="uid://b0clkw0apagjc" path="res://addons/kenney_prototype_textures/red/texture_10.png" id="2_0nonk"]
-[ext_resource type="Script" path="res://scenes/ui/reticle.gd" id="5_5tt2p"]
+[ext_resource type="Animation" uid="uid://hbwaf8c2t543" path="res://assets/Animations/L_HandPunch.res" id="5_ers80"]
+[ext_resource type="Script" path="res://scenes/player/plcombat.gd" id="5_nwn0c"]
 [ext_resource type="Script" path="res://scenes/player/state_machine.gd" id="6_5afdu"]
 [ext_resource type="Script" path="res://assets/scripts/player/idle_player_state.gd" id="7_m7hbg"]
 [ext_resource type="Script" path="res://assets/scripts/player/walking_player_state.gd" id="8_2k8ub"]
 [ext_resource type="Script" path="res://assets/scripts/player/sprinting_player_state.gd" id="9_rkuj1"]
+[ext_resource type="Script" path="res://assets/scripts/player/HurtBox.gd" id="12_y4pjd"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_d7cw2"]
 
@@ -20,20 +22,8 @@ uv1_triplanar = true
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_0nonk"]
 
-[sub_resource type="Animation" id="Animation_0nonk"]
-resource_name = "crouch"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("CamComponent:position")
-tracks/0/interp = 2
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector3(0, 0.5, 0), Vector3(0, 0.25, 0)]
-}
+[sub_resource type="BoxMesh" id="BoxMesh_rkuj1"]
+size = Vector3(0.2, 0.2, 1)
 
 [sub_resource type="Animation" id="Animation_5tt2p"]
 length = 0.001
@@ -82,44 +72,32 @@ tracks/3/keys = {
 "points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
 "times": PackedFloat32Array(0)
 }
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("CamComponent/Camera3D/Hands/HandL:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-0.42443, 0.3, -0.5)]
+}
 
-[sub_resource type="Animation" id="Animation_2k8ub"]
-resource_name = "walking"
-length = 2.0
-loop_mode = 1
-step = 0.1
-tracks/0/type = "bezier"
+[sub_resource type="Animation" id="Animation_0nonk"]
+resource_name = "crouch"
+tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("CamComponent:position:x")
-tracks/0/interp = 1
+tracks/0/path = NodePath("CamComponent:position")
+tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
-"points": PackedFloat32Array(0.015, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, -0.015, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0.015, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0, 0.5, 1, 1.5, 2)
-}
-tracks/1/type = "bezier"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("CamComponent:position:y")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
-"points": PackedFloat32Array(0.45, -0.25, 0, 0.35, 0.01, 0.55, -0.25, 0, 0.25, 0, 0.45, -0.35, 0.01, 0.35, 0.01, 0.55, -0.25, 0, 0.25, 0, 0.45, -0.35, 0.01, 0.25, 0),
-"times": PackedFloat32Array(0, 0.5, 1, 1.5, 2)
-}
-tracks/2/type = "bezier"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("CamComponent:position:z")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0.5, 0), Vector3(0, 0.25, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_rkuj1"]
@@ -161,6 +139,45 @@ tracks/2/keys = {
 "times": PackedFloat32Array()
 }
 
+[sub_resource type="Animation" id="Animation_2k8ub"]
+resource_name = "walking"
+length = 2.0
+loop_mode = 1
+step = 0.1
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CamComponent:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
+"points": PackedFloat32Array(0.015, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, -0.015, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0.015, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.5, 1, 1.5, 2)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CamComponent:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
+"points": PackedFloat32Array(0.45, -0.25, 0, 0.35, 0.01, 0.55, -0.25, 0, 0.25, 0, 0.45, -0.35, 0.01, 0.35, 0.01, 0.55, -0.25, 0, 0.25, 0, 0.45, -0.35, 0.01, 0.25, 0),
+"times": PackedFloat32Array(0, 0.5, 1, 1.5, 2)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("CamComponent:position:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5afdu"]
 _data = {
 "RESET": SubResource("Animation_5tt2p"),
@@ -169,15 +186,152 @@ _data = {
 "walking": SubResource("Animation_2k8ub")
 }
 
+[sub_resource type="Animation" id="Animation_y4pjd"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CamComponent/Camera3D/Hands/HandR:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.424, 0.3, -0.5)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Combat/HandsHitBox/CollisionShape3D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("CamComponent/Camera3D/Hands/HandL:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-0.42443, 0.3, -0.5)]
+}
+
+[sub_resource type="Animation" id="Animation_nwn0c"]
+resource_name = "R_HandPunch"
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CamComponent/Camera3D/Hands/HandR:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0.424, 0.3, -0.5), Vector3(0.424, 0.3, -1.2), Vector3(0.424, 0.3, -0.5)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Combat/HandsHitBox/CollisionShape3D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.9, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [true, false, false, true]
+}
+
+[sub_resource type="Animation" id="Animation_mxnws"]
+resource_name = "dual_handPunch"
+length = 2.0
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CamComponent/Camera3D/Hands/HandL:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 1, 1.6, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(-0.42443, 0.3, -0.5), Vector3(-0.424, 0.5, -1), Vector3(-0.424, 0.3, -1.2), Vector3(-0.424, 0.5, -1), Vector3(-0.42443, 0.3, -0.5)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CamComponent/Camera3D/Hands/HandR:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4, 1, 1.6, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0.424, 0.3, -0.5), Vector3(0.424, 0.5, -1), Vector3(0.424, 0.3, -1.2), Vector3(0.424, 0.5, -1), Vector3(0.424, 0.3, -0.5)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Combat/HandsHitBox/CollisionShape3D:disabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1.2, 2, 2.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [true, false, false, true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_y4pjd"]
+_data = {
+"L_HandPunch": ExtResource("5_ers80"),
+"RESET": SubResource("Animation_y4pjd"),
+"R_HandPunch": SubResource("Animation_nwn0c"),
+"dual_handPunch": SubResource("Animation_mxnws")
+}
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nwn0c"]
+size = Vector3(1.09662, 0.8, 0.55249)
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_5tt2p"]
 
-[node name="playerController" type="CharacterBody3D" node_paths=PackedStringArray("standing_collision", "crouching_collision", "animation_player", "crouch_check")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nwn0c"]
+bg_color = Color(0.15, 0.15, 0.15, 0.780392)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y4pjd"]
+bg_color = Color(0.733333, 0, 0.88, 0.619608)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mxnws"]
+bg_color = Color(0, 0.766667, 1, 0.745098)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3y0ka"]
+bg_color = Color(0.82, 0, 0, 0.466667)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_nwn0c"]
+radius = 0.545345
+height = 2.07579
+
+[node name="playerController" type="CharacterBody3D" node_paths=PackedStringArray("standing_collision", "crouching_collision", "animation_player", "crouch_check", "combat_system", "progressBar")]
 script = ExtResource("1_0cfoe")
 debug = true
 standing_collision = NodePath("standing_collision")
 crouching_collision = NodePath("crouching_collision")
-animation_player = NodePath("AnimationPlayer")
+animation_player = NodePath("NormalAnimationPlayer")
 crouch_check = NodePath("ShapeCast3D")
+combat_system = NodePath("Combat")
+progressBar = NodePath("SubViewportContainer/SubViewport/ProgressBar")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_d7cw2")
@@ -199,15 +353,62 @@ script = ExtResource("1_iivv4")
 player_controller = NodePath("../..")
 component_mouse_capture = NodePath("../../Components/mousecapture")
 
+[node name="Hands" type="Node3D" parent="CamComponent/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0.6)
+
+[node name="HandL" type="MeshInstance3D" parent="CamComponent/Camera3D/Hands"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.42443, 0.3, -0.5)
+mesh = SubResource("BoxMesh_rkuj1")
+
+[node name="HandR" type="MeshInstance3D" parent="CamComponent/Camera3D/Hands"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.424, 0.3, -0.5)
+mesh = SubResource("BoxMesh_rkuj1")
+
 [node name="Components" type="Node" parent="."]
 
 [node name="mousecapture" type="Node" parent="Components"]
 script = ExtResource("1_4q5nu")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="NormalAnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_5afdu")
 }
+
+[node name="Combat" type="Node3D" parent="." node_paths=PackedStringArray("SecAnimation_player", "PunchCoolDownTimer", "DoublePCoolDownTimer", "HitBox", "punchTimerBar", "doublePTimerBar", "leftHand", "rightHand")]
+script = ExtResource("5_nwn0c")
+SecAnimation_player = NodePath("FightAnimationPlayer")
+PunchCoolDownTimer = NodePath("PunchCoolDown")
+DoublePCoolDownTimer = NodePath("DoubleCoolDown")
+HitBox = NodePath("HandsHitBox")
+punchTimerBar = NodePath("../SubViewportContainer/SubViewport/PunchTimerBar")
+doublePTimerBar = NodePath("../SubViewportContainer/SubViewport/DoubleTimerBar")
+leftHand = NodePath("../CamComponent/Camera3D/Hands/HandL")
+rightHand = NodePath("../CamComponent/Camera3D/Hands/HandR")
+
+[node name="FightAnimationPlayer" type="AnimationPlayer" parent="Combat"]
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_y4pjd")
+}
+speed_scale = 2.0
+
+[node name="PunchCoolDown" type="Timer" parent="Combat"]
+wait_time = 0.5
+one_shot = true
+
+[node name="DoubleCoolDown" type="Timer" parent="Combat"]
+one_shot = true
+
+[node name="HandsHitBox" type="Area3D" parent="Combat"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.6)
+collision_layer = 16
+collision_mask = 0
+metadata/damage = 10.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Combat/HandsHitBox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000438929, 0.2, -1.49556)
+shape = SubResource("BoxShape3D_nwn0c")
+disabled = true
 
 [node name="ShapeCast3D" type="ShapeCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -224,37 +425,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="Reticle" type="CenterContainer" parent="ui"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("5_5tt2p")
-
-[node name="top" type="Line2D" parent="ui/Reticle"]
-points = PackedVector2Array(0, -5, 0, -15)
-width = 2.0
-
-[node name="right" type="Line2D" parent="ui/Reticle"]
-points = PackedVector2Array(5, 0, 15, 0)
-width = 2.0
-
-[node name="bottom" type="Line2D" parent="ui/Reticle"]
-points = PackedVector2Array(0, 5, 0, 15)
-width = 2.0
-
-[node name="left" type="Line2D" parent="ui/Reticle"]
-points = PackedVector2Array(-5, 0, -15, 0)
-width = 2.0
-
 [node name="PlayerStateMachine" type="Node" parent="." node_paths=PackedStringArray("CURRENT_STATE")]
 script = ExtResource("6_5afdu")
 CURRENT_STATE = NodePath("IdlePlayerState")
@@ -267,3 +437,83 @@ script = ExtResource("8_2k8ub")
 
 [node name="SprintingPlayerState" type="Node" parent="PlayerStateMachine"]
 script = ExtResource("9_rkuj1")
+
+[node name="AttackPlayerState" type="Node" parent="PlayerStateMachine"]
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="PunchTimerBar" type="ProgressBar" parent="SubViewportContainer/SubViewport"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -72.0
+offset_top = -27.0
+offset_right = -48.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 1
+theme_override_styles/background = SubResource("StyleBoxFlat_nwn0c")
+theme_override_styles/fill = SubResource("StyleBoxFlat_y4pjd")
+fill_mode = 3
+show_percentage = false
+
+[node name="DoubleTimerBar" type="ProgressBar" parent="SubViewportContainer/SubViewport"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -2.0
+offset_top = -27.0
+offset_right = 22.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 1
+theme_override_styles/background = SubResource("StyleBoxFlat_nwn0c")
+theme_override_styles/fill = SubResource("StyleBoxFlat_mxnws")
+fill_mode = 3
+show_percentage = false
+
+[node name="ProgressBar" type="ProgressBar" parent="SubViewportContainer/SubViewport"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 79.0
+offset_top = -27.0
+offset_right = 206.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/fill = SubResource("StyleBoxFlat_3y0ka")
+value = 50.0
+rounded = true
+
+[node name="HurtBox" type="Area3D" parent="."]
+script = ExtResource("12_y4pjd")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HurtBox"]
+shape = SubResource("CapsuleShape3D_nwn0c")
+
+[connection signal="timeout" from="Combat/PunchCoolDown" to="Combat" method="punchcoolDownOver"]
+[connection signal="timeout" from="Combat/DoubleCoolDown" to="Combat" method="doublecoolDownOver"]

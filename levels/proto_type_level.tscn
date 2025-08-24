@@ -474,4 +474,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_2l33n")
 [node name="playerController" parent="." instance=ExtResource("2_hdc4b")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.05212, 1, 0)
 debug = false
+acceleration = 0.025
+deceleration = 0.025
 jump_velocity = 5.5

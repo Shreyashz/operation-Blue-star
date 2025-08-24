@@ -8,6 +8,7 @@ sky_material = SubResource("ProceduralSkyMaterial_rqpgq")
 [sub_resource type="Environment" id="Environment_rgg22"]
 background_mode = 2
 sky = SubResource("Sky_r6rh3")
+tonemap_mode = 3
 
 [node name="WorldEnvironment" type="WorldEnvironment"]
 environment = SubResource("Environment_rgg22")

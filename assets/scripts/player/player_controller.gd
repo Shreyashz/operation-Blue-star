@@ -8,6 +8,8 @@ class_name Player extends CharacterBody3D
 @export var animation_player: AnimationPlayer
 @export var crouch_check : ShapeCast3D
 @export var interaction_raycast : RayCast3D
+@export var combat_system:CombatController
+@export var progressBar:ProgressBar
 @export_category("Movement Settings")
 @export_group("Easing")
 @export var acceleration : float = 0.2
@@ -16,23 +18,28 @@ class_name Player extends CharacterBody3D
 @export var accelaration: float = 0.1
 @export var decelaration: float = 0.25
 @export var default_speed : float = 5.0
-@export var sprint_speed : float = 3.0
+@export var sprint_speed : float = 4.0
 @export var crouch_speed : float = -3.0
 @export_category("Jump Settings")
 @export var jump_velocity : float = 4.5
 @export_category("crouching")
 @export var toggle_crouch: bool = false
 
+var _is_punching:bool = false
 var _is_crouching: bool = false
 var _input_dir : Vector2 = Vector2.ZERO
 var _movement_velocity : Vector3 = Vector3.ZERO
 var sprint_modifier : float = 0.0
 var crouch_modifier : float = 0.0
 var speed : float = 0.0
+var sides
+var health: float = 100
 
 func _ready() -> void:
 	Global.player = self
+	sides = combat_system.sides
 	crouch_check.add_exception(self)
+	Global.game_controller.start_tut()
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("dev_exit"):
@@ -53,6 +60,10 @@ func _input(event: InputEvent) -> void:
 			stand()
 		else:
 			stand_later()
+	if health>0:
+		progressBar.value = health
+	elif health==0:
+		Global.game_controller.end_game()
 
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
@@ -61,7 +72,7 @@ func _physics_process(delta: float) -> void:
 	var speed_modifier = sprint_modifier + crouch_modifier
 	speed = default_speed + speed_modifier
 	
-	_input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
+	_input_dir = cal_movement()
 	var current_velocity = Vector2(_movement_velocity.x, _movement_velocity.z)
 	var direction = (transform.basis * Vector3(_input_dir.x, 0, _input_dir.y)).normalized()
 	
@@ -76,10 +87,25 @@ func _physics_process(delta: float) -> void:
 		jump()
 	move_and_slide()
 	
+	if Input.is_action_just_pressed("fire_L"):
+		combat_system.fire(sides.left)
+	elif Input.is_action_just_pressed("fire_R"):
+		combat_system.fire(sides.right)
+	if Input.is_action_just_pressed("dodge_L"):
+		combat_system.two_handed()
+func cal_movement()-> Vector2:
+	if (!_is_punching):
+		return Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
+	return Vector2.ZERO
+
+func _stop():
+	_is_punching = true
+
+func _start():
+	_is_punching = false
 
 func update_rotation(rotation_input) -> void:
 	global_transform.basis = Basis.from_euler(rotation_input)
-
 
 func sprint() -> void:
 	sprint_modifier = sprint_speed
@@ -115,3 +141,7 @@ func crouch() -> void:
 
 func jump() -> void:
 	velocity.y = jump_velocity
+
+
+func punched(damage:float):
+	health -= damage

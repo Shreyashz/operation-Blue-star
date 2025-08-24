@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://cqp0sb52o5bcq"]
+
+[ext_resource type="Script" path="res://assets/scripts/system/game_controller.gd" id="1_ux0k3"]
+
+[node name="GameController" type="Node" node_paths=PackedStringArray("world2d", "world3d", "gui")]
+script = ExtResource("1_ux0k3")
+world2d = NodePath("Wold2D")
+world3d = NodePath("World3D")
+gui = NodePath("GUI")
+testing = true
+finished = "res://scenes/ui/EndGame.tscn"
+tut_gui = "res://scenes/ui/tutorial.tscn"
+default_gui = "res://scenes/ui/empty_gui.tscn"
+
+[node name="World3D" type="Node3D" parent="."]
+
+[node name="Wold2D" type="Node2D" parent="."]
+
+[node name="GUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 1
